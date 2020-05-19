@@ -134,6 +134,7 @@ public class CredentialService {
     public ResponseEntity<Credential> createCredential(String token, CredentialDTO credentialDTO) throws JsonProcessingException {
         String credentialJson = mapper.writeValueAsString(credentialDTO);
         HttpEntity<String> entity = getHttpEntityWithToken(credentialJson, token);
+
         UriComponents uriComponents = UriComponentsBuilder.newInstance()
                 .scheme("http")
                 .host("localhost")
@@ -142,6 +143,27 @@ public class CredentialService {
                 .build();
 
         ResponseEntity<Credential> exchange = restTemplate.exchange(uriComponents.toUriString(), HttpMethod.POST, entity, Credential.class);
+        return exchange;
+    }
+
+    public ResponseEntity<Credential> updateCredential(String uuid, CredentialDTO credentialDTO) {
+        //todo write the update method
+        return null;
+    }
+
+    public ResponseEntity<Credential> deleteCredential(String token, String uuid) {
+        Object body = null;
+        HttpEntity entity = getHttpEntityWithToken(body, token);
+
+        UriComponents uriComponents = UriComponentsBuilder.newInstance()
+                .scheme("http")
+                .host("localhost")
+                .port(port)
+                .path("credentials/" + uuid)
+                .build();
+
+        ResponseEntity<Credential> exchange = restTemplate.exchange(uriComponents.toUriString(), HttpMethod.DELETE, entity, Credential.class);
+
         return exchange;
     }
 
@@ -162,14 +184,6 @@ public class CredentialService {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(mediaTypes);
         return new HttpEntity(body, headers);
-    }
-
-    public ResponseEntity<Credential> updateCredential(String uuid, CredentialDTO credentialDTO) {
-        return null;
-    }
-
-    public ResponseEntity<Credential> deleteCredential(String uuid) {
-        return null;
     }
 
 }
