@@ -7,7 +7,7 @@ server:
 
 spring:
   profiles:
-    active: cloud
+    active: default
 
 ---
 spring:
@@ -25,4 +25,4 @@ spring:
 endpoint:
   scheme: https
   host: springcert-brave-manatee-ij.cfapps.io
-  port:
+  port: null

@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class EndpointConfiguration {
     private String scheme;
     private String host;
-    private Integer port;
+    private String port;
 
     public void setScheme(String scheme) {
         this.scheme = scheme;
@@ -16,7 +16,7 @@ public class EndpointConfiguration {
         this.host = host;
     }
 
-    public void setPort(Integer port) {
+    public void setPort(String port) {
         this.port = port;
     }
 
@@ -28,7 +28,7 @@ public class EndpointConfiguration {
         return host;
     }
 
-    public Integer getPort() {
+    public String getPort() {
         return port;
     }
 }

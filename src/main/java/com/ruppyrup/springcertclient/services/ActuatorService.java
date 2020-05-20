@@ -13,8 +13,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.Optional;
-
 import static com.ruppyrup.springcertclient.util.HeaderUtil.getHttpEntity;
 
 @Service
@@ -35,7 +33,7 @@ public class ActuatorService {
         Object body = null;
         HttpEntity entity = getHttpEntity(body);
 
-        String port = Optional.ofNullable(endpoint.getPort()).orElse(null);
+        String port = endpoint.getPort().isBlank() ? null : endpoint.getPort();
 
         UriComponents uriComponents = UriComponentsBuilder.newInstance()
                 .scheme(endpoint.getScheme())
