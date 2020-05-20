@@ -6,7 +6,9 @@ import com.jayway.jsonpath.JsonPath;
 import com.ruppyrup.springcertclient.dto.Credential;
 import com.ruppyrup.springcertclient.dto.CredentialDTO;
 import com.ruppyrup.springcertclient.dto.UserDTO;
+import com.ruppyrup.springcertclient.services.ActuatorService;
 import com.ruppyrup.springcertclient.services.CredentialService;
+import com.ruppyrup.springcertclient.services.UserService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
@@ -25,7 +27,13 @@ import java.util.stream.Collectors;
 public class ControllerTest {
 
     @Autowired
-    private CredentialService service;
+    private CredentialService credentialService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private ActuatorService actuatorService;
 
     private String username = "client";
     private String password = "client";
@@ -36,24 +44,23 @@ public class ControllerTest {
     private Credential createdCredential1;
     private Credential createdCredential2;
 
-    //todo need to get proper token object
     @BeforeAll
     public void setup() throws JsonProcessingException {
         try {
-            service.registerUser(userDTO);
+            userService.registerUser(userDTO);
         } catch (HttpClientErrorException e) {
             System.out.println(e.getMessage());
         }
-        ResponseEntity<String> authenticateResponse = service.authenticateUser(userDTO);
+        ResponseEntity<String> authenticateResponse = userService.authenticateUser(userDTO);
         token = JsonPath.parse(authenticateResponse.getBody()).read("$.token");
         System.out.println(token);
     }
 
     @AfterAll
     public void cleanUp() throws JsonProcessingException {
-        service.deleteCredential(token, createdCredential1.getUuid());
-        service.deleteCredential(token, createdCredential2.getUuid());
-        service.deleteUser(token, userDTO);
+        credentialService.deleteCredential(token, createdCredential1.getUuid());
+        credentialService.deleteCredential(token, createdCredential2.getUuid());
+        userService.deleteUser(token, userDTO);
     }
 
     @Test
@@ -62,7 +69,7 @@ public class ControllerTest {
         //given server is running
 
         //when
-        ResponseEntity<String> health = service.getHealth();
+        ResponseEntity<String> health = actuatorService.getHealth();
 
         //then
         Assertions.assertThat(health.getBody()).contains("UP");
@@ -74,8 +81,8 @@ public class ControllerTest {
         //given server is running with authenticated user
 
         //when
-        createdCredential1 = service.createCredential(token, credentialDTO1).getBody();
-        createdCredential2 = service.createCredential(token, credentialDTO2).getBody();
+        createdCredential1 = credentialService.createCredential(token, credentialDTO1).getBody();
+        createdCredential2 = credentialService.createCredential(token, credentialDTO2).getBody();
 
         //then
         Assertions.assertThat(new CredentialDTO(createdCredential1)).isEqualTo(credentialDTO1);
@@ -88,8 +95,8 @@ public class ControllerTest {
         // given database has credentials and a user
 
         //when
-        Credential credential1 = service.getCredential(token, createdCredential1.getUuid()).getBody();
-        Credential credential2 = service.getCredential(token, createdCredential2.getUuid()).getBody();
+        Credential credential1 = credentialService.getCredential(token, createdCredential1.getUuid()).getBody();
+        Credential credential2 = credentialService.getCredential(token, createdCredential2.getUuid()).getBody();
 
         //then
         Assertions.assertThat(new CredentialDTO(credential1)).isEqualTo(credentialDTO1);
@@ -102,7 +109,7 @@ public class ControllerTest {
         // given database has credentials and a user
 
         //when
-        List<Credential> credentials = service.getCredentials(token).getBody();
+        List<Credential> credentials = credentialService.getCredentials(token).getBody();
 
         //then
         List<CredentialDTO> credentialDTOList = credentials.stream().map(CredentialDTO::new).collect(Collectors.toList());
@@ -113,10 +120,11 @@ public class ControllerTest {
     @Order(5)
     public void updateCredential() throws JsonProcessingException {
         //given server is running with authenticated user
-
+        credentialDTO1.setUrl("www.changedthis.com");
+        credentialDTO2.setLogin("changedLogin");
         //when
-        createdCredential1 = service.updateCredential(token, credentialDTO1).getBody();
-        createdCredential2 = service.createCredential(token, credentialDTO2).getBody();
+        createdCredential1 = credentialService.updateCredential(token, createdCredential1.getUuid(), credentialDTO1).getBody();
+        createdCredential2 = credentialService.updateCredential(token, createdCredential2.getUuid(), credentialDTO2).getBody();
 
         //then
         Assertions.assertThat(new CredentialDTO(createdCredential1)).isEqualTo(credentialDTO1);
