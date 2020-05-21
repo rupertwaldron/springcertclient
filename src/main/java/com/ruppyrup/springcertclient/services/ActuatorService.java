@@ -1,7 +1,7 @@
 package com.ruppyrup.springcertclient.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ruppyrup.springcertclient.config.EndpointConfiguration;
+import com.ruppyrup.springcertclient.util.PathUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import static com.ruppyrup.springcertclient.util.HeaderUtil.getHttpEntity;
 
@@ -21,7 +20,7 @@ public class ActuatorService {
     private ObjectMapper mapper = new ObjectMapper();
 
     @Autowired
-    EndpointConfiguration endpoint;
+    PathUtil pathUtil;
 
     @Autowired
     RestTemplate restTemplate;
@@ -33,14 +32,7 @@ public class ActuatorService {
         Object body = null;
         HttpEntity entity = getHttpEntity(body);
 
-        String port = endpoint.getPort().isBlank() ? null : endpoint.getPort();
-
-        UriComponents uriComponents = UriComponentsBuilder.newInstance()
-                .scheme(endpoint.getScheme())
-                .host(endpoint.getHost())
-                .port(port)
-                .path("actuator/health")
-                .build();
+        UriComponents uriComponents = pathUtil.getUriComponents("actuator/health");
 
         ResponseEntity<String> response = restTemplate.exchange(uriComponents.toUriString(), HttpMethod.GET, entity, String.class);
         LOG.info(String.valueOf(response));

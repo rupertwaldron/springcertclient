@@ -7,7 +7,7 @@ server:
 
 spring:
   profiles:
-    active: default
+    active: cloud
 
 ---
 spring:

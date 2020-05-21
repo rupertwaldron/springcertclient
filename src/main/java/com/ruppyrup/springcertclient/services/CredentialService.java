@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ruppyrup.springcertclient.dto.Credential;
 import com.ruppyrup.springcertclient.dto.CredentialDTO;
+import com.ruppyrup.springcertclient.util.PathUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,26 +23,20 @@ import static com.ruppyrup.springcertclient.util.HeaderUtil.getHttpEntityWithTok
 @Service
 public class CredentialService {
 
-    private ObjectMapper mapper = new ObjectMapper();
-
-    private int port = 8080;
+    @Autowired
+    PathUtil pathUtil;
 
     @Autowired
     RestTemplate restTemplate;
 
-    private final String url = "http://localhost:8080/";
+    private ObjectMapper mapper = new ObjectMapper();
     private Logger LOG = LoggerFactory.getLogger(CredentialService.class);
 
     public ResponseEntity<Credential> getCredential(String token, String credentialId) {
         Object body = null;
         HttpEntity entity = getHttpEntityWithToken(body, token);
 
-        UriComponents uriComponents = UriComponentsBuilder.newInstance()
-                .scheme("http")
-                .host("localhost")
-                .port(port)
-                .path("credentials/" + credentialId)
-                .build();
+        UriComponents uriComponents = pathUtil.getUriComponents("credentials/" + credentialId);
 
         ResponseEntity<Credential> response = restTemplate.exchange(uriComponents.toUriString(), HttpMethod.GET, entity, Credential.class);
         LOG.info(String.valueOf(response));
@@ -53,12 +47,7 @@ public class CredentialService {
         Object body = null;
         HttpEntity entity = getHttpEntityWithToken(body, token);
 
-        UriComponents uriComponents = UriComponentsBuilder.newInstance()
-                .scheme("http")
-                .host("localhost")
-                .port(port)
-                .path("credentials")
-                .build();
+        UriComponents uriComponents = pathUtil.getUriComponents("credentials");
 
         ResponseEntity<Credential[]> response = restTemplate.exchange(uriComponents.toUriString(), HttpMethod.GET, entity, Credential[].class);
         List<Credential> credentials = Arrays.asList(response.getBody());
@@ -70,12 +59,7 @@ public class CredentialService {
         String credentialJson = mapper.writeValueAsString(credentialDTO);
         HttpEntity<String> entity = getHttpEntityWithToken(credentialJson, token);
 
-        UriComponents uriComponents = UriComponentsBuilder.newInstance()
-                .scheme("http")
-                .host("localhost")
-                .port(port)
-                .path("credentials")
-                .build();
+        UriComponents uriComponents = pathUtil.getUriComponents("credentials");
 
         ResponseEntity<Credential> exchange = restTemplate.exchange(uriComponents.toUriString(), HttpMethod.POST, entity, Credential.class);
         LOG.info(exchange.toString());
@@ -85,12 +69,8 @@ public class CredentialService {
     public ResponseEntity<Credential> updateCredential(String token, String uuid, CredentialDTO credentialDTO) throws JsonProcessingException {
         String credentialJson = mapper.writeValueAsString(credentialDTO);
         HttpEntity<String> entity = getHttpEntityWithToken(credentialJson, token);
-        UriComponents uriComponents = UriComponentsBuilder.newInstance()
-                .scheme("http")
-                .host("localhost")
-                .port(port)
-                .path("credentials/" + uuid)
-                .build();
+
+        UriComponents uriComponents = pathUtil.getUriComponents("credentials/" + uuid);
 
         ResponseEntity<Credential> exchange = restTemplate.exchange(uriComponents.toUriString(), HttpMethod.PUT, entity, Credential.class);
         return exchange;
@@ -100,12 +80,7 @@ public class CredentialService {
         Object body = null;
         HttpEntity entity = getHttpEntityWithToken(body, token);
 
-        UriComponents uriComponents = UriComponentsBuilder.newInstance()
-                .scheme("http")
-                .host("localhost")
-                .port(port)
-                .path("credentials/" + uuid)
-                .build();
+        UriComponents uriComponents = pathUtil.getUriComponents("credentials/" + uuid);
 
         ResponseEntity<Credential> exchange = restTemplate.exchange(uriComponents.toUriString(), HttpMethod.DELETE, entity, Credential.class);
         LOG.info(exchange.toString());
