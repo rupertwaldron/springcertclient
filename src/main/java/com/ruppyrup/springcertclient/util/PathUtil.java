@@ -7,7 +7,7 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @Component
-public final class PathUtil {
+public class PathUtil {
 
     @Autowired
     EndpointConfiguration endpoint;
