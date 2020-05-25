@@ -4,25 +4,3 @@ app:
 
 server:
   port: 8090
-
-spring:
-  profiles:
-    active: cloud
-
----
-spring:
-  profiles: default
-
-endpoint:
-  scheme: http
-  host: localhost
-  port: 8080
-
----
-spring:
-  profiles: cloud
-
-endpoint:
-  scheme: https
-  host: springcert-brave-manatee-ij.cfapps.io
-  port: null

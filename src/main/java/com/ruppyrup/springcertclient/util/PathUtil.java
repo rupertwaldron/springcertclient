@@ -1,7 +1,6 @@
 package com.ruppyrup.springcertclient.util;
 
-import com.ruppyrup.springcertclient.config.EndpointConfiguration;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -9,15 +8,22 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Component
 public class PathUtil {
 
-    @Autowired
-    EndpointConfiguration endpoint;
+    @Value("${endpoint.port}")
+    String portProfile;
+
+    @Value("${endpoint.scheme}")
+    String scheme;
+
+    @Value("${endpoint.host}")
+    String host;
+
 
     public final UriComponents getUriComponents(String path) {
-        String port = endpoint.getPort().isBlank() ? null : endpoint.getPort();
+        String port = portProfile.isBlank() ? null : portProfile;
 
         return UriComponentsBuilder.newInstance()
-                .scheme(endpoint.getScheme())
-                .host(endpoint.getHost())
+                .scheme(scheme)
+                .host(host)
                 .port(port)
                 .path(path)
                 .build();
