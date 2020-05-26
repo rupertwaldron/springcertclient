@@ -7,11 +7,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpMethod;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
 
-@ExtendWith(MockitoExtension.class)
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.verify;
 
+@ExtendWith(MockitoExtension.class)
 class ActuatorServiceTest {
 
     @Mock
@@ -33,5 +36,10 @@ class ActuatorServiceTest {
     @Test
     void getHealth() {
         service.getHealth();
+        verify(restTemplate).exchange(
+                anyString(),
+                eq(HttpMethod.GET),
+                any(),
+                eq(String.class));
     }
 }

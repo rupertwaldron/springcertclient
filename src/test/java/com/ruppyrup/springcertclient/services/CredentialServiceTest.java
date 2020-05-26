@@ -1,6 +1,8 @@
 package com.ruppyrup.springcertclient.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ruppyrup.springcertclient.dto.Credential;
+import com.ruppyrup.springcertclient.dto.CredentialDTO;
 import com.ruppyrup.springcertclient.util.PathUtil;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -67,4 +69,45 @@ class CredentialServiceTest {
         Assertions.assertThat(response.getBody()).isEqualTo(credential);
     }
 
+    @Test
+    public void whenCreateCredentialsIsCalled_shouldReturnCreatedObject() throws JsonProcessingException {
+        ResponseEntity<Credential> entity = new ResponseEntity(credential, HttpStatus.OK);
+        Mockito
+                .when(restTemplate.exchange(
+                        anyString(),
+                        eq(HttpMethod.POST),
+                        any(),
+                        eq(Credential.class))).thenReturn(entity);
+
+        ResponseEntity<Credential> response = credentialService.createCredential(null, new CredentialDTO(credential));
+        Assertions.assertThat(response.getBody()).isEqualTo(credential);
+    }
+
+    @Test
+    public void whenUpdateCredentialsIsCalled_shouldReturnUpdatedObject() throws JsonProcessingException {
+        ResponseEntity<Credential> entity = new ResponseEntity(credential, HttpStatus.OK);
+        Mockito
+                .when(restTemplate.exchange(
+                        anyString(),
+                        eq(HttpMethod.PUT),
+                        any(),
+                        eq(Credential.class))).thenReturn(entity);
+
+        ResponseEntity<Credential> response = credentialService.updateCredential(null, "Boots", new CredentialDTO(credential));
+        Assertions.assertThat(response.getBody()).isEqualTo(credential);
+    }
+
+    @Test
+    public void whenDeleteCredentialsIsCalled_shouldReturnUpdatedObject() throws JsonProcessingException {
+        ResponseEntity<Credential> entity = new ResponseEntity(credential, HttpStatus.OK);
+        Mockito
+                .when(restTemplate.exchange(
+                        anyString(),
+                        eq(HttpMethod.DELETE),
+                        any(),
+                        eq(Credential.class))).thenReturn(entity);
+
+        ResponseEntity<Credential> response = credentialService.deleteCredential(null, "Boots");
+        Assertions.assertThat(response.getBody()).isEqualTo(credential);
+    }
 }
