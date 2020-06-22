@@ -14,7 +14,7 @@ public class Credential {
     private String url;
     private String login;
     private String password;
-    private String user;
+    private UserDTO user;
 
     public Credential(CredentialDTO credentialDTO) {
         this.credentialName = credentialDTO.getCredentialName();

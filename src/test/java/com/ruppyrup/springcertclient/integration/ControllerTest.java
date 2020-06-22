@@ -62,7 +62,7 @@ public class ControllerTest {
     public void cleanUp() throws JsonProcessingException {
         credentialService.deleteCredential(token, createdCredential1.getUuid());
         credentialService.deleteCredential(token, createdCredential2.getUuid());
-        userService.deleteUser(token, userDTO);
+        //userService.deleteUser(token, userDTO);
     }
 
     @Test

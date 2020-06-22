@@ -3,6 +3,7 @@ package com.ruppyrup.springcertclient.services;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ruppyrup.springcertclient.dto.Credential;
 import com.ruppyrup.springcertclient.dto.CredentialDTO;
+import com.ruppyrup.springcertclient.dto.UserDTO;
 import com.ruppyrup.springcertclient.util.PathUtil;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,7 +32,7 @@ class CredentialServiceTest {
     @InjectMocks
     CredentialService credentialService;
 
-    private Credential credential = new Credential(1L, "a", "Boots", "www.boots.com", "RW", "password", "ruppyrup");
+    private Credential credential = new Credential(1L, "a", "Boots", "www.boots.com", "RW", "password", new UserDTO("ruppyrup", "ruppyrup"));
 
     @BeforeEach
     void setUp() {
