@@ -87,8 +87,8 @@ public class ControllerTest {
         createdCredential2 = credentialService.createCredential(token, credentialDTO2).getBody();
 
         //then
-        Assertions.assertThat(new CredentialDTO(createdCredential1)).isEqualTo(credentialDTO1);
-        Assertions.assertThat(new CredentialDTO(createdCredential2)).isEqualTo(credentialDTO2);
+        Assertions.assertThat(new CredentialDTO(createdCredential1)).isEqualToIgnoringGivenFields(credentialDTO1, "login", "password");
+        Assertions.assertThat(new CredentialDTO(createdCredential2)).isEqualToIgnoringGivenFields(credentialDTO2, "login", "password");
     }
 
     @Test
@@ -129,8 +129,8 @@ public class ControllerTest {
         createdCredential2 = credentialService.updateCredential(token, createdCredential2.getUuid(), credentialDTO2).getBody();
 
         //then
-        Assertions.assertThat(new CredentialDTO(createdCredential1)).isEqualTo(credentialDTO1);
-        Assertions.assertThat(new CredentialDTO(createdCredential2)).isEqualTo(credentialDTO2);
+        Assertions.assertThat(new CredentialDTO(createdCredential1)).isEqualToIgnoringGivenFields(credentialDTO1, "login", "password");
+        Assertions.assertThat(new CredentialDTO(createdCredential2)).isEqualToIgnoringGivenFields(credentialDTO2, "login", "password");
     }
 
 }
