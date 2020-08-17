@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+    <link rel="stylesheet" href="login.css" th:href="@{css/login.css}"/>
+</head>
+<body>
+<h1>Register</h1>
+
+<form action="/register" method="POST" th:object="${userDTO}">
+    <div class="newUserBox">
+
+        <div class="fieldSection">
+            <div class="fieldTitle">Login name & Password</div>
+
+            <input type="text" name="username" id="username" placeholder="username" required="required" th:field="*{username}"/>
+            <input type="password" name="pass1" id="pass1" placeholder="password" required="required" th:field="*{password}"/>
+
+        </div>
+
+<!--        <img class="logo" src="asterisk-guy.jpg" th:src="@{images/asterisk-guy.jpg}"/>-->
+
+        <input type="submit" value="Register" class="button" />
+    </div>
+</form>
+
+</body>
+</html>
